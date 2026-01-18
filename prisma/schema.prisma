@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Property {
+  id             String   @id @default(uuid())
+  sourceId       String   // 元サイトのID
+  source         String   // サイト名
+  name           String   // 物件名
+  address        String   // 所在地
+  prefecture     String   // 都道府県
+  rent           Int?     // 賃料
+  managementFee  Int?     // 共益費
+  status         String   // available, occupied
+  type           String   // 'garage_house' (Default)
+  imageUrl       String?
+  detailUrl      String
+  features       String[]
+  lastSeenAt     DateTime @updatedAt
+  firstSeenAt    DateTime @default(now())
+  
+  @@unique([source, sourceId])
+  @@index([prefecture, rent])
+}
+
+// 定期実行ログ
+model ScrapeLog {
+  id        String   @id @default(uuid())
+  source    String
+  status    String
+  count     Int
+  createdAt DateTime @default(now())
+}

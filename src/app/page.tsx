@@ -3,6 +3,8 @@ import { createClient } from '@/lib/supabase/server';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { Property } from '@/lib/types';
+
 export const revalidate = 0; // Dynamic rendering for now, or use ISR with revalidate tag
 
 export default async function Home() {
@@ -10,7 +12,8 @@ export default async function Home() {
   const { data: properties } = await supabase
     .from('Property')
     .select('*')
-    .order('lastSeenAt', { ascending: false });
+    .order('lastSeenAt', { ascending: false })
+    .returns<Property[]>();
 
   return (
     <main className="min-h-screen bg-gray-50 text-gray-900">
